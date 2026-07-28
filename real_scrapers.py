@@ -308,18 +308,18 @@ def scrape_amazon(query: str, category: str, max_items: int = 8) -> List[Dict]:
     for c in cards:
         try:
             name_el = c.select_one("h2 span")
-            price_whole = c.select_one("span.a-price-whole")
-            price_frac = c.select_one("span.a-price-fraction")
+            # Fiyatın hazır/temiz formatı burada: "15.024,00 TL" gibi -
+            # ayrı ayrı whole/fraction span'larını birleştirmeye çalışmak
+            # yerine direkt bunu kullanmak çok daha güvenilir.
+            price_el = c.select_one("span.a-price span.a-offscreen")
             old_price_el = c.select_one("span.a-price.a-text-price span.a-offscreen")
-            link_el = c.select_one("h2 a")
+            # Ürün linki h2'nin İÇİNDE olmayabiliyor; kart içinde /dp/ (ürün
+            # sayfası deseni) içeren herhangi bir <a> etiketini arıyoruz.
+            link_el = c.find("a", href=re.compile(r"/dp/"))
             img_el = c.select_one("img.s-image")
 
-            if not (name_el and price_whole and link_el):
+            if not (name_el and price_el and link_el):
                 continue
-
-            price_text = price_whole.get_text(strip=True)
-            if price_frac:
-                price_text += "." + price_frac.get_text(strip=True)
 
             href = link_el.get("href", "")
             items.append({
@@ -327,7 +327,7 @@ def scrape_amazon(query: str, category: str, max_items: int = 8) -> List[Dict]:
                 "category": category,
                 "url": href if href.startswith("http") else "https://www.amazon.com.tr" + href,
                 "image_url": img_el.get("src", "") if img_el else "",
-                "current_price": _clean_price(price_text),
+                "current_price": _clean_price(price_el.get_text()),
                 "original_price": _clean_price(old_price_el.get_text()) if old_price_el else None,
                 "rating": None,
                 "source": "Amazon",
