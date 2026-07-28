@@ -292,6 +292,13 @@ def scrape_amazon(query: str, category: str, max_items: int = 8) -> List[Dict]:
         # Kartlar bulundu ama içeriden isim/fiyat çıkmıyorsa teşhis için
         # ilk kartın ham HTML'inin bir kısmını sakla (arayüzde gösterilecek)
         diag['sample_html'] = str(cards[0])[:2000]
+    else:
+        # Hiç kart bulunamadıysa (muhtemelen Amazon farklı bir sayfa -
+        # bot kontrolü, boş sonuç, farklı yapı - döndürdü), sayfanın
+        # başlığını ve ilk kısmını teşhis için sakla
+        title_tag = soup.select_one("title")
+        diag['page_title'] = title_tag.get_text(strip=True) if title_tag else "(başlık yok)"
+        diag['sample_html'] = resp.text[:1500]
     for c in cards:
         try:
             name_el = c.select_one("h2 span")

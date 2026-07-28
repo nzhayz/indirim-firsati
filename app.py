@@ -231,10 +231,12 @@ with tab_scan:
                     sample_diag = next((d for d in diag_list if d.get("sample_html")), None)
                     if sample_diag:
                         st.write("---")
+                        page_title = sample_diag.get("page_title")
+                        title_info = f" (sayfa başlığı: *{page_title}*)" if page_title else ""
                         st.write(
-                            f"**{sample_diag.get('site')}** kart buldu ama ürün bilgisi çıkaramadı. "
-                            "Aşağıdaki ham HTML örneğini kopyalayıp bana gönderirsen, "
-                            "doğru seçicileri yazıp düzeltebilirim:"
+                            f"**{sample_diag.get('site')}** beklenenden farklı bir sayfa döndürdü{title_info}. "
+                            "Aşağıdaki ham HTML/örnek metni kopyalayıp bana gönderirsen, "
+                            "neyin değiştiğini görüp düzeltebilirim:"
                         )
                         st.code(sample_diag["sample_html"], language="html")
                     st.caption(
