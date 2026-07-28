@@ -227,6 +227,16 @@ with tab_scan:
                         blocked = " 🚫 engellenmiş görünüyor" if d.get("blocked") else ""
                         err = f" — hata: {d.get('error')}" if d.get("error") else ""
                         st.write(f"- **{site}** / {cat}: HTTP {status}, {cards} kart bulundu, {found} ürün alındı{blocked}{err}")
+
+                    sample_diag = next((d for d in diag_list if d.get("sample_html")), None)
+                    if sample_diag:
+                        st.write("---")
+                        st.write(
+                            f"**{sample_diag.get('site')}** kart buldu ama ürün bilgisi çıkaramadı. "
+                            "Aşağıdaki ham HTML örneğini kopyalayıp bana gönderirsen, "
+                            "doğru seçicileri yazıp düzeltebilirim:"
+                        )
+                        st.code(sample_diag["sample_html"], language="html")
                     st.caption(
                         "HTTP 200 ama 'kart bulundu: 0' ise → sitenin HTML yapısı değişmiş, "
                         "seçicilerin güncellenmesi gerekiyor. HTTP 403/429/yok ise → site isteği "

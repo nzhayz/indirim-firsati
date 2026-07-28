@@ -288,6 +288,10 @@ def scrape_amazon(query: str, category: str, max_items: int = 8) -> List[Dict]:
     items = []
     cards = soup.select("div[data-component-type='s-search-result']")[:max_items]
     diag['cards_found'] = len(cards)
+    if cards:
+        # Kartlar bulundu ama içeriden isim/fiyat çıkmıyorsa teşhis için
+        # ilk kartın ham HTML'inin bir kısmını sakla (arayüzde gösterilecek)
+        diag['sample_html'] = str(cards[0])[:2000]
     for c in cards:
         try:
             name_el = c.select_one("h2 span")
