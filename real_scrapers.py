@@ -290,8 +290,14 @@ def scrape_amazon(query: str, category: str, max_items: int = 8) -> List[Dict]:
     diag['cards_found'] = len(cards)
     if cards:
         # Kartlar bulundu ama içeriden isim/fiyat çıkmıyorsa teşhis için
-        # ilk kartın ham HTML'inin bir kısmını sakla (arayüzde gösterilecek)
-        diag['sample_html'] = str(cards[0])[:2000]
+        # başlık ve fiyat alanlarının bulunduğu kısımları ayrı ayrı sakla
+        # (ham kartın tamamı çok uzun ve gereksiz wrapper div dolu olduğu için)
+        first_card = cards[0]
+        h2_tag = first_card.find("h2")
+        price_tag = first_card.find(class_=lambda c: c and "a-price" in c)
+        diag['title_area_html'] = str(h2_tag)[:1500] if h2_tag else "(h2 etiketi bulunamadı)"
+        diag['price_area_html'] = str(price_tag)[:1000] if price_tag else "(a-price class'ı bulunamadı)"
+        diag['sample_html'] = str(first_card)[:6000]
     else:
         # Hiç kart bulunamadıysa (muhtemelen Amazon farklı bir sayfa -
         # bot kontrolü, boş sonuç, farklı yapı - döndürdü), sayfanın

@@ -234,11 +234,18 @@ with tab_scan:
                         page_title = sample_diag.get("page_title")
                         title_info = f" (sayfa başlığı: *{page_title}*)" if page_title else ""
                         st.write(
-                            f"**{sample_diag.get('site')}** beklenenden farklı bir sayfa döndürdü{title_info}. "
-                            "Aşağıdaki ham HTML/örnek metni kopyalayıp bana gönderirsen, "
-                            "neyin değiştiğini görüp düzeltebilirim:"
+                            f"**{sample_diag.get('site')}** için teşhis bilgisi{title_info}. "
+                            "Aşağıdaki kutuların içeriğini kopyalayıp bana gönderirsen, "
+                            "doğru seçicileri yazıp düzeltebilirim:"
                         )
-                        st.code(sample_diag["sample_html"], language="html")
+                        if sample_diag.get("title_area_html"):
+                            st.write("**Başlık alanı bulundu mu:**")
+                            st.code(sample_diag["title_area_html"], language="html")
+                        if sample_diag.get("price_area_html"):
+                            st.write("**Fiyat alanı bulundu mu:**")
+                            st.code(sample_diag["price_area_html"], language="html")
+                        if not sample_diag.get("title_area_html") and not sample_diag.get("price_area_html"):
+                            st.code(sample_diag["sample_html"], language="html")
                     st.caption(
                         "HTTP 200 ama 'kart bulundu: 0' ise → sitenin HTML yapısı değişmiş, "
                         "seçicilerin güncellenmesi gerekiyor. HTTP 403/429/yok ise → site isteği "
