@@ -1,8 +1,10 @@
 {
-  "categories": ["Telefon", "Laptop"],
-  "min_discount_pct": 15,
+  "categories": ["Telefon", "Laptop", "Tablet", "Kamera", "Video Ekipmanları", "Ev Ürünleri", "Kulaklık", "Akıllı Saat"],
+  "min_discount_pct": 5,
   "min_rating": 4.0,
   "history_days": 90,
   "max_products": 10,
-  "email": ""
+  "email": "indirimfirsatiyeni@gmail.com",
+  "data_source": "Gerçek Kazıma",
+  "sites": ["Amazon"]
 }
